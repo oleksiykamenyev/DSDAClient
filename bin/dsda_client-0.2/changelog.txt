@@ -1,0 +1,17 @@
+0.1:
+ - Initial version
+0.1.1:
+ - Fix crash on retrieving record for non-existent wad
+0.2:
+ - Add prefix to input queries
+ - Add short versions of commands
+ - Handle keyboard interrupt and EOFError
+ - Try sanitizing wad names to remove .pk3 and .wad from end if they are added.
+ - Update logic for error messages to return message to CLI instead of printing it
+   - Will be needed for future Discord bot to properly print error output
+ - Update possible player list to print only if there are few possible players and sort/remove dupes
+ - Add changelog
+ - Fix LICENSE
+ - Update playerstats to try removing spaces and checking for the player with no spaces
+ - Update playerstats to print alias that was seen in case user query matches to multiple players
+   and there were matches to aliases

@@ -1,0 +1,21 @@
+WAD page layout:
+    row1top, row2top: top MAP## rows:
+        - five columns
+            - mapnumber, category, player name, source port, time and demo link
+
+    row1, row2: other run rows and comments
+        -  run rows:
+            same category:
+                three columns:
+                    player name, source port, time and demo link
+            different category:
+                four columns:
+                    category, player name, soruce port, time and demo link
+        - comment rows:
+            one column
+                comment
+
+    One row2 row is for topmost header
+    Multi-page/Compet-N wads are the same, but the wad navigation rows at the bottom are also under row1/row2
+        - five columns
+            map links

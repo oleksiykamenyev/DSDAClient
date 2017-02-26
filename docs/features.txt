@@ -1,0 +1,50 @@
+return record times
+return last DSDA update
+return playerstats and wadstats
+random page on DSDA
+  - random player page
+  - random wad page
+more intelligent search
+
+
+playerstats:
+  Total time
+  Average time
+  Longest demo
+  Total number of demos
+  Most run category
+  number of TAS runs
+  Number of wads recorded
+  Average demos per wad
+
+wadstats:
+  Total time
+  Average time
+  Total number of demos
+  Number of players who ran it
+  Player with most runs
+
+TODO?
+random demo
+ - no clean way to get a list of all demos I think, won't do
+get biggest time difference between 1st and 2nd places across DSDA
+ - probably will be a one-time script that I run whenever I feel like coding it
+percentage of record runs
+ - too long to parse so many wad pages, won't do
+ignore ".wad" when querying wads - DONE
+add substring search for wads
+  - would probably not be too useful due to the number of wads, won't do
+    - never mind I'm doing it
+change input() to input(' >') - DONE
+autocomplete or short command versions - DONE
+ - autocomplete would break Windows because readline is not Windows-compatible :\
+handle Keyboard Interrupt exceptions - DONE
+    try:
+        user_query = input('> ')
+    except EOFError:
+        exit('')
+    except KeyboardInterrupt:
+        print()
+    else:
+    ...
+handle short map numbers for Doom 1 wads and short episode notation (ep1 or e1), probably all for D[12]ALL as well

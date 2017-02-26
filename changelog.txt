@@ -1,0 +1,45 @@
+0.1:
+ - Initial version
+0.1.1:
+ - Fix crash on retrieving record for non-existent wad
+0.2:
+ - Add prefix to input queries
+ - Add short versions of commands
+ - Handle keyboard interrupt and EOFError
+ - Try sanitizing wad names to remove .pk3 and .wad from end if they are added.
+ - Update logic for error messages to return message to CLI instead of printing it
+   - Will be needed for future Discord bot to properly print error output
+ - Update possible player list to print only if there are few possible players and sort/remove dupes
+ - Add changelog
+ - Fix LICENSE
+ - Update playerstats to try removing spaces and checking for the player with no spaces
+ - Update playerstats to print alias that was seen in case user query matches to multiple players
+   and there were matches to aliases
+0.3
+ - Update random wad and player URLs to return player and wad names as well
+ - Round average demo counts instead of integer cast (floor)
+ - Perform substring search for wads
+ - Case insensitive search for player aliases
+ - Skip FDAs in top category/wad results for players
+ - Return player name and wad name for stats searches
+ - Update instance variables in client to match private variable convention
+ - Update year in LICENSE
+ - Update version in CLI
+ - Add new alias to player aliases
+ - Style fixes
+0.3.1
+ - Fix bug in returning player names
+ - Fix bug in full sync if wad to compat dict exists on file but is not loaded in memory
+ - Fix bug in wadstats for returning wad name and paginated wads with .wad prefix
+ - Fix bug with dividing by zero in wadstats and playerstats
+ - Fix bug in wad/player name not found introduced by dividing by zero fix
+ - Fix bug in returning secret map records for paginated wads
+ - Allow returning secret map records by the short map number version
+ - Allow returning MAPS1 map records by short map number version
+ - Add extra aliases to player aliases yaml
+   - Dime, rileymartin, dew, Looper, Memfis, Ser, NaturalTvventy, DonCorleone
+0.3.2
+ - Return number of options when there are too many
+   - Check all wads before deciding this to determine accurate count
+   - Increase number of returned wad options to 20
+ - Use partial aliases YAML

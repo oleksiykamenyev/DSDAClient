@@ -1,0 +1,4 @@
+cx_Freeze
+lxml
+requests
+PyYAML

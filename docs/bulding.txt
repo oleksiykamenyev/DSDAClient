@@ -1,0 +1,9 @@
+Recommended exe build tool: cx_Freeze
+
+Other tools I tried did not work. PyInstaller does not appear to support multiple python file packaging (but it may
+work if the files are all combined into one). py2exe supports multiple Python files, but does not support Python
+3.5.x (should work with 3.4, though, if that were used).
+
+To build a Windows executable from this project, it should be enough to run python.exe setup.py build, if python.exe is
+on the path (otherwise replace python.exe with the path to Python). This project was tested with Python 3.5.2, but
+it probably should work with a different recent Python 3.x with minimal changes.
