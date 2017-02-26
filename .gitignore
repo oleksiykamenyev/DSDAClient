@@ -133,3 +133,6 @@ old_code/**/*
 
 # All player aliases
 player_aliases_full.yaml
+
+# Binary unzipped directories
+bin/dsda_client-*/
