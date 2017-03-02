@@ -570,6 +570,7 @@ class DSDAClient(object):
 
     @staticmethod
     def _guess_prboom_compat(port_split):
+        """Guesses engine compatibility based on PrBoom+ complevel"""
         # PrBoom entries with complevels use the
         # complevel for guessing the compat
         complevel = int(port_split[1])
