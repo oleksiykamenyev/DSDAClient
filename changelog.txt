@@ -43,3 +43,5 @@
    - Check all wads before deciding this to determine accurate count
    - Increase number of returned wad options to 20
  - Use partial aliases YAML
+ - Add extra aliases for:
+   - Looper (partial file only), j4rio
