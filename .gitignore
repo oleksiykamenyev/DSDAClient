@@ -130,8 +130,5 @@ wad_name_to_url.txt
 # Old code
 old_code/**/*
 
-# All player aliases
-player_aliases_full.yaml
-
 # Binary unzipped directories
 bin/dsda_client-*/
