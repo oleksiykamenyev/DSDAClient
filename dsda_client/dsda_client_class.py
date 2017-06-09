@@ -1119,20 +1119,20 @@ class DSDAClient(object):
                     else:
                         if len(row) > 3:
                             found_category = row[0].text
-                            if in_right_category:
-                                # If the next category is encountered (a row with
-                                # at least four columns), and it's not one of the
-                                # categories wanted, set current category to wrong.
-                                if found_category not in categories:
-                                    in_right_category = False
-                                    continue
+                        if in_right_category:
+                            # If the next category is encountered (a row with
+                            # at least four columns), and it's not one of the
+                            # categories wanted, set current category to wrong.
+                            if found_category not in categories:
+                                in_right_category = False
+                                continue
+                            time_tuple = self._valid_check_record(row, wad_compat)
+                        else:
+                            # Keep checking that the category is the one needed
+                            # for all category rows (length greater than 3)
+                            if found_category in categories:
+                                in_right_category = True
                                 time_tuple = self._valid_check_record(row, wad_compat)
-                            else:
-                                # Keep checking that the category is the one needed
-                                # for all category rows (length greater than 3)
-                                if found_category in categories:
-                                    in_right_category = True
-                                    time_tuple = self._valid_check_record(row, wad_compat)
                 else:
                     # Map number rows all have five columns or more
                     if len(row) > 4:
