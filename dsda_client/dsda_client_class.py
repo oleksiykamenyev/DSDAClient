@@ -167,6 +167,20 @@ class DSDAClient(object):
         'uvnomonsters100': ['NoMo 100']
     }
 
+    # Dictionary mapping exact DSDA category strings to "fixed" category names :^)
+    DSDA_CATEGORIES_TO_FIXED_NAMES = {
+        'UV Max': 'UV-Max',
+        'UV Speed': 'UV-Speed',
+        'NM Speed': 'NM-Speed',
+        'NM 100': 'NM100',
+        'Pacifist': 'UV Pacifist',
+        'Tyson': 'UV Tyson',
+        'UV -Fast': 'UV -fast',
+        'Respawn': 'UV -respawn',
+        'NoMo': 'Nomo',
+        'NoMo 100': 'Nomo100'
+    }
+
     # Files used to cache various info synced with DSDA
     PLAYER_NAME_TO_URL_FILE_NAME = 'player_name_to_url.txt'
     WAD_NAME_TO_URL_FILE_NAME = 'wad_name_to_url.txt'
@@ -639,6 +653,58 @@ class DSDAClient(object):
         date_span = tree.xpath('//span[@class="date"]')
         return date_span[0].text
 
+    def get_last_update_info(self):
+        """Gets last update info from DSDA
+
+        Retrieves date and demo count info as well as info on new players and
+        wads
+        """
+        if not self._wad_name_to_url_dict:
+            if os.path.isfile(self.WAD_NAME_TO_URL_FILE_NAME):
+                with io.open(self.WAD_NAME_TO_URL_FILE_NAME, encoding='utf8')\
+                        as wad_name_to_url_file:
+                    wad_mappings = wad_name_to_url_file.readlines()
+
+                for wad_map in wad_mappings:
+                    wad, url = wad_map.rsplit('=')
+                    self._wad_name_to_url_dict[wad] = url
+                    self._url_to_wad_name_dict[url] = wad
+            else:
+                self.sync_wads()
+        if not self._player_name_to_url_dict:
+            if os.path.isfile(self.PLAYER_NAME_TO_URL_FILE_NAME):
+                with io.open(self.PLAYER_NAME_TO_URL_FILE_NAME, encoding='utf8')\
+                        as player_name_to_url_file:
+                    player_mappings = player_name_to_url_file.readlines()
+
+                for player_map in player_mappings:
+                    player, url = player_map.rsplit('=')
+                    self._player_name_to_url_dict[player.lower()] = url
+                    self._url_to_player_name_dict[url.rstrip('\n')] = player
+                    # Ugly way to keep track of the original spelling for player
+                    # names for error message printing
+                    self._player_lowercase_to_original_dict[player.lower()] = player
+            else:
+                self.sync_players()
+
+        tree = hf.get_web_page_html(self.UPDATES_URL)
+        date_span = tree.xpath('//span[@class="date"]')
+        demos = tree.xpath('//span[@class="lmp"]')
+        demo_count = len(demos)
+        new_players = []
+        for demo in demos:
+            demo_info_text = demo.text_content()
+            player_name = demo_info_text.split(' by ')[-1]
+            if player_name.lower() not in self._player_name_to_url_dict:
+                new_players.append(player_name)
+
+        return_dict = {
+            'update_date': date_span[0].text,
+            'demo_count': demo_count,
+            'new_players': list(set(new_players))
+        }
+        return return_dict
+
     def get_player_stats(self, player_name):
         """Gets player stats for given player name
 
@@ -1043,6 +1109,7 @@ class DSDAClient(object):
         in_right_category = False
         possible_times = []
         for row in rows[1:]:
+            time_tuple = None
             if len(row) > 2:
                 if in_right_map:
                     # If the next map has been encountered (a row with at least
@@ -1050,34 +1117,37 @@ class DSDAClient(object):
                     if len(row) > 4:
                         break
                     else:
-                        if in_right_category:
-                            # If the next category is encountered (a row with
-                            # at least four columns), and it's not one of the
-                            # categories wanted, set current category to wrong.
-                            if len(row) > 3 and row[0].text not in categories:
-                                in_right_category = False
-                                continue
-                            time_tuple = self._valid_check_record(row, wad_compat)
-                            if time_tuple:
-                                possible_times.append(time_tuple)
-                        else:
-                            # Keep checking that the category is the one needed
-                            # for all category rows (length greater than 3)
-                            if len(row) > 3 and row[0].text in categories:
+                        if len(row) > 3:
+                            found_category = row[0].text
+                            if in_right_category:
+                                # If the next category is encountered (a row with
+                                # at least four columns), and it's not one of the
+                                # categories wanted, set current category to wrong.
+                                if found_category not in categories:
+                                    in_right_category = False
+                                    continue
                                 time_tuple = self._valid_check_record(row, wad_compat)
-                                if time_tuple:
-                                    possible_times.append(time_tuple)
-                                in_right_category = True
+                            else:
+                                # Keep checking that the category is the one needed
+                                # for all category rows (length greater than 3)
+                                if found_category in categories:
+                                    in_right_category = True
+                                    time_tuple = self._valid_check_record(row, wad_compat)
                 else:
                     # Map number rows all have five columns or more
                     if len(row) > 4:
+                        found_category = row[1].text
                         if not map_number or row[0].text.lower() == map_number.lower():
                             in_right_map = True
-                        if in_right_map and row[1].text in categories:
+                        if in_right_map and found_category in categories:
                             time_tuple = self._valid_check_record(row, wad_compat)
-                            if time_tuple:
-                                possible_times.append(time_tuple)
                             in_right_category = True
+                if time_tuple:
+                    if found_category == categories[0]:
+                        time_tuple.append(None)
+                    else:
+                        time_tuple.append(self.DSDA_CATEGORIES_TO_FIXED_NAMES[found_category])
+                    possible_times.append(time_tuple)
 
         if not possible_times:
             if map_number:
@@ -1112,7 +1182,7 @@ class DSDAClient(object):
                 if re.match(port_regex, port):
                     if (cls.EXECUTABLE_REGEXES[port_regex] == 'PrBoom' or
                             wad_compat == cls.EXECUTABLE_REGEXES[port_regex]):
-                        return time.split()[0], row[-3].text, demo_url
+                        return [time.split()[0], row[-3].text, demo_url]
 
         return None
 

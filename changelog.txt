@@ -45,3 +45,9 @@
  - Use partial aliases YAML
  - Add extra aliases for:
    - Looper (partial file only), j4rio
+0.3.3
+ - Add full player aliases yaml to git
+ - Return extra info after an update
+ - Return actual category name if it differs from requested category
+ - Add extra aliases for:
+   - ELMLE, Alexander Nikulin, rdwpa, Henning Skogsto

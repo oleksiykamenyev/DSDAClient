@@ -73,10 +73,14 @@ def main():
                 record_tuple = dsda_client.get_record(user_wad_name, user_category, user_map_number)
                 record_info = record_tuple[0]
                 if record_info is not None:
-                    print('Time: {time}\nPlayer: {player}\nDemo link: {demo}'.format(
+                    qualification = ''
+                    if record_info[3] is not None:
+                        qualification = ' (Also {})'.format(record_info[3])
+                    print('Time: {time}{qualification}\nPlayer: {player}\nDemo link: {demo}'.format(
                         time=record_info[0],
                         player=record_info[1],
-                        demo=record_info[2]
+                        demo=record_info[2],
+                        qualification=qualification
                     ))
                 else:
                     print(record_tuple[1])
@@ -160,7 +164,11 @@ def main():
         elif (user_query.lower() == 'last_dsda_update' or
               user_query.lower() == 'ldu' or
               user_query.lower() == 'l'):
-            print(dsda_client.get_last_update_date())
+            last_update_info = dsda_client.get_last_update_info()
+            list_of_new_players = ', '.join(last_update_info['new_players'])
+            print('Update date: {}'.format(last_update_info['update_date']))
+            print('Number of demos: {}'.format(last_update_info['demo_count']))
+            print('New players: {}'.format(list_of_new_players))
         else:
             print('Unrecognized command: {}'.format(user_query))
 

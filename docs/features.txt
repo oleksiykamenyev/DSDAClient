@@ -27,6 +27,7 @@ wadstats:
 TODO?
 random demo
  - no clean way to get a list of all demos I think, won't do
+   - figured something out for this, will do
 get biggest time difference between 1st and 2nd places across DSDA
  - probably will be a one-time script that I run whenever I feel like coding it
 percentage of record runs
@@ -48,3 +49,6 @@ handle Keyboard Interrupt exceptions - DONE
     else:
     ...
 handle short map numbers for Doom 1 wads and short episode notation (ep1 or e1), probably all for D[12]ALL as well
+return number of demos during an update
+  - return new players and wads during an update
+    - there ends up being too many wads, so I don't think it's worth it
